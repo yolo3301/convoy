@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: img-migrate
+spec:
+  containers:
+  - name: img-migrate
+    image: gcr.io/cshou-share/convoy
+    command: ["/bin/bash"]
+    args: ["-c", "/migrate.sh"]
+    env:
+    - name: DEST_USER
+      valueFrom:
+        secretKeyRef:
+          name: dest-reg-secret
+          key: username
+    - name: DEST_PWD
+      valueFrom:
+        secretKeyRef:
+          name: dest-reg-secret
+          key: password
+    - name: SRC_USER
+      valueFrom:
+        secretKeyRef:
+          name: src-reg-secret
+          key: username
+    - name: SRC_PWD
+      valueFrom:
+        secretKeyRef:
+          name: src-reg-secret
+          key: password
+    - name: SRC_PREFIX
+      value: {{SRC_PREFIX}}
+    - name: DEST_PREFIX
+      value: {{DEST_PREFIX}}
+  - volumeMounts:
+    - name: image-list
+      mountPath: /images
+      subPath: images
+  restartPolicy: Never
+  volumes:
+  - name: "image-list"
+    configMap:
+      name: "image-list"

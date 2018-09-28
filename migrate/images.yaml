@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: image-list
+data:
+  images: |
+    {{image1}}
+    {{image2}}
+    ...
